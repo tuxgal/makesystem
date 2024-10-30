@@ -7,8 +7,8 @@ endif
 
 # Build image information.
 IMAGE_TAG           ?= local-latest
-DOCKERHUB_USER_NAME ?= tuxdude
-GHCR_USER_NAME      ?= tuxdudehomelab
+DOCKERHUB_USER_NAME ?= tuxgal
+GHCR_USER_NAME      ?= tuxgalhomelab
 FULL_IMAGE_NAME     := $(DOCKERHUB_USER_NAME)/$(IMAGE_NAME):$(IMAGE_TAG)
 
 # Supported platforms (primarily used by gituhb workflows).
