@@ -164,10 +164,16 @@ test_http_endpoint() {
     local port="${4:?}"
     local expected_status_code="${5:-200}"
     local path="${6}"
+    local insecure=""
+
+    if [[ "${protocol:?}" == "https-insecure" ]]; then
+        protocol="https"
+        insecure="--insecure"
+    fi
 
     set +e
     local http_status_code=$(\
-        curl --silent --location --write-out "%{http_code}" --output /dev/null "${protocol:?}://${host:?}:${port:?}/${path}")
+        curl --silent --location --write-out "%{http_code}" --output /dev/null ${insecure} "${protocol:?}://${host:?}:${port:?}/${path}")
     local return_code=$?
     set -e
 
