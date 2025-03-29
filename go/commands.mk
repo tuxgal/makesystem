@@ -25,7 +25,7 @@ GOIMPORTS                         := $(GO_IMPORTS_CMD) -w
 GOFMT                             := $(GO_FMT_CMD) -s -w
 GOLINT                            := $(GO_LINT_CMD) -set_exit_status -min_confidence 0.200001
 GOLINTAGG                         := $(GO_LINT_CMD) -set_exit_status -min_confidence 0
-GOLANGCILINT                      := $(GO_CI_LINT_CMD) run
+GOLANGCILINT                      := $(GO_CI_LINT_CMD) run --show-stats=false
 GOLANGCILINTAGG                   := $(GO_CI_LINT_CMD) run --enable-all
 GORELEASERRELEASE                 := GO_PKG_VERSION=$(GO_PKG_VERSION) GO_PKG_COMMIT=$(GO_PKG_COMMIT) GO_PKG_DATE=$(GO_PKG_DATE) $(GO_RELEASER) release
 GORELEASERCHECK                   := GO_PKG_VERSION=$(GO_PKG_VERSION) GO_PKG_COMMIT=$(GO_PKG_COMMIT) GO_PKG_DATE=$(GO_PKG_DATE) $(GO_RELEASER) check
