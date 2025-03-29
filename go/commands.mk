@@ -30,7 +30,7 @@ GOLANGCILINTAGG                   := $(GO_CI_LINT_CMD) run --enable-all
 GORELEASERRELEASE                 := GO_PKG_VERSION=$(GO_PKG_VERSION) GO_PKG_COMMIT=$(GO_PKG_COMMIT) GO_PKG_DATE=$(GO_PKG_DATE) $(GO_RELEASER) release
 GORELEASERCHECK                   := GO_PKG_VERSION=$(GO_PKG_VERSION) GO_PKG_COMMIT=$(GO_PKG_COMMIT) GO_PKG_DATE=$(GO_PKG_DATE) $(GO_RELEASER) check
 INSTALL_GORELEASER_HOOK_PREREQS   := $(GO_CMD) install \
-    github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+    github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
 CLEAN_ALL                         := $(GOCLEAN) ./... && rm -rf $(GEN_FILES)
 
 # Alternative for running golangci-lint, using docker instead:
