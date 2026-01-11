@@ -288,14 +288,7 @@ git_local_repo_latest_tag() {
 
 dockerhub_tags() {
     local dockerhub_repo="${1:?}"
-    case "${dockerhub_repo:?}" in
-        */*) :;; # namespace/repository syntax, leave as is
-        *) dockerhub_repo="library/${dockerhub_repo:?}";; # bare repository name (docker official image); must convert to namespace/repository syntax
-    esac
-    auth_url="https://auth.docker.io/token?service=registry.docker.io&scope=repository:${dockerhub_repo:?}:pull"
-    token="$(curl --silent --fail --location --show-error "${auth_url:?}" | jq --raw-output '.token')"
-    tags_url="https://registry-1.docker.io/v2/${dockerhub_repo:?}/tags/list"
-    curl --silent --fail --location --show-error -H "Accept: application/json" -H "Authorization: Bearer ${token:?}" "${tags_url:?}" | jq --raw-output '.tags[]'
+    skopeo --override-os linux list-tags docker://${dockerhub_repo:?} | jq --raw-output .Tags[]
 }
 
 dockerhub_latest_tag() {
