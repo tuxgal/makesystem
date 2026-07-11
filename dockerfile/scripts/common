@@ -133,8 +133,31 @@ package_versions_for_packages_in_packages_install_cmd() {
 
 update_packages_install() {
     if [ -f "${PACKAGES_INSTALL_FILE:?}" ]; then
-        updated_list=$(docker run --rm "$(base_image_name)" sh -c "$(package_versions_for_packages_in_packages_install_cmd)" | grep -v 'Listing...')
-        echo "${updated_list:?}" > "${PACKAGES_INSTALL_FILE:?}"
+        # 1. Identify packages that currently use an asterisk suffix in their version.
+        declare -A asterisk_pkgs
+        while IFS="=" read -r pkg ver; do
+            if [ -n "$pkg" ] && [[ "$ver" == *"*" ]]; then
+                asterisk_pkgs["$pkg"]=1
+            fi
+        done < "${PACKAGES_INSTALL_FILE:?}"
+
+        # 2. Fetch the updated list from the docker container (strip carriage returns).
+        local raw_list=$(docker run --rm "$(base_image_name)" sh -c "$(package_versions_for_packages_in_packages_install_cmd)" | grep -v 'Listing...' | tr -d '\r')
+
+        # 3. Process the updated list to preserve asterisk suffixes where applicable.
+        local updated_list=""
+        while IFS="=" read -r pkg new_ver; do
+            if [ -z "$pkg" ]; then continue; fi
+            if [ "${asterisk_pkgs["$pkg"]}" = "1" ]; then
+                # Strip everything from '+' onwards (e.g. +deb13u1) and append '*'
+                stripped_ver="${new_ver%%+*}"
+                new_ver="${stripped_ver}*"
+            fi
+            updated_list+="${pkg}=${new_ver}"$'\n'
+        done <<< "$raw_list"
+
+        # 4. Save the updated list.
+        echo -n "${updated_list}" > "${PACKAGES_INSTALL_FILE:?}"
     else
         echo "No ${PACKAGES_INSTALL_FILE:?} found, so skipping ..."
     fi
